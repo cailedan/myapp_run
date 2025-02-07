@@ -18,7 +18,8 @@ class HelloWorld extends Component {
     render() { 
         return (
             <div>
-                <h1>start</h1>
+            <h1>start</h1>
+            <h2>一个伟大的作品</h2>
                 <br />
                 <h1>{this.state.message}</h1>
             </div>
