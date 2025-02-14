@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import RunMap from "../runmap/runmap.js";
 import GameAnimation from "../objects/animation.jsx";
+import pushrunner from "../runner/pushrunner.js";
 
 class PlaygroundJsx extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class PlaygroundJsx extends Component {
         };
         this.playgroundRef = React.createRef(); // 创建一个 ref 引用
         this.canvasRef = React.createRef();
-       
+        this.runners = [];
     }
 
     componentDidMount() {
@@ -29,6 +30,7 @@ class PlaygroundJsx extends Component {
         if ($canvas)
         {
             this.runmap = new RunMap(playground, $canvas);
+            this.runners = pushrunner(this ,this.runmap.width, this.runmap.height);
             $canvas.addEventListener('contextmenu', (e) => {
                 e.preventDefault();  // 阻止右键菜单
               });  
