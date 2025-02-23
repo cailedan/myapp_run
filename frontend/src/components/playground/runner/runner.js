@@ -2,7 +2,7 @@ import { AcGameObject } from "../objects/zbase.js";
 
 export default class Runner extends AcGameObject
 {
-    constructor(playground ,x, y, radius, color)
+    constructor(playground ,x, y, radius, color , speed)
     {   
         super();
         this.playground = playground;
@@ -12,23 +12,29 @@ export default class Runner extends AcGameObject
         this.radius = radius;
         this.color = color;
         this.state = "waiting";
-        this.speed = this.radius * 2;
+        this.speed = speed;
     }
 
     start()
-    {
-
+    {   
+        console.log(this.state);
+        setTimeout(() => {
+            this.state = "running";
+            
+        }, 2000);
     }
 
     update()
     {   
-        if (this.state === "waiting")
-        {
-            setTimeout(() => {
-                this.state = "run";
-                this.move();
-            }, 3000);
-        }
+        
+       
+            
+     if (this.state === "running")
+     {
+                
+       this.move();
+     }
+      
         this.render();
     }
 
@@ -39,10 +45,11 @@ export default class Runner extends AcGameObject
 
     move()
     {
-        this.x -= this.speed;
+        this.x -= this.speed * this.timedelta / 1000;
         if (this.x <= this.ctx.canvas.width * 0.4)
         {
             this.x = this.ctx.canvas.width * 0.4;
+            this.state = "finished";
         }
     }
 

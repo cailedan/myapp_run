@@ -29,8 +29,11 @@ class PlaygroundJsx extends Component {
         const $canvas = this.canvasRef.current;
         if ($canvas)
         {
-            this.runmap = new RunMap(playground, $canvas);
-            this.runners = pushrunner(this ,this.runmap.width, this.runmap.height);
+            this.runmap = new RunMap(this, $canvas);
+            for (let i = 1; i <= 8; i++)
+            {
+                this.runners.push(pushrunner(this, this.runmap.width, this.runmap.height, this.runmap.height*0.1, i));
+            }
             $canvas.addEventListener('contextmenu', (e) => {
                 e.preventDefault();  // 阻止右键菜单
               });  
