@@ -42,14 +42,14 @@ export default class RunMap extends AcGameObject{
     // resize() {
     //     this.ctx.canvas.width = this.playground.clientWidth;
     //     this.ctx.canvas.height = this.playground.clienttHeight;
-    //     this.ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    //     this.ctx.fillStyle = "rgb(32, 154, 154)";
     //     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     // }
 
     updateLines() {
         // 根据跑者平均速度移动起跑线
-        const avgSpeed = this.getAverageSpeed();
-        this.startLineOffset += avgSpeed * 0.8;
+        const midSpeed = this.getMidSpeed();
+        this.startLineOffset += midSpeed * 0.5*this.timedelta/1000;
         
         // 当有跑者接近终点时显示终点线
         if (!this.showFinishLine && this.anyRunnerNearFinish()) {
@@ -58,18 +58,25 @@ export default class RunMap extends AcGameObject{
         
         // 移动终点线
         if (this.showFinishLine) {
+            let runners = this.playground.runners;
+            for (let i = 0; i < runners.length; i++) {
+                let speed = runners[i].speed;
+            }
             if (this.state === "fighting") {
                 if (this.get_winner() ) {
-                    this.finishLineOffset = 0;
                     this.state === "get_winner";
                 }
                 else {
-                    // console.log(this.finishLineOffset);
-                    this.finishLineOffset = avgSpeed * 0.05;
-                    // console.log(avgSpeed);
+
+                    if(midSpeed * 0.5 > 0)
+                    {
+                        let finish_line_position = midSpeed * 0.5*this.timedelta/1000;
+                        this.finishLineOffset += finish_line_position;
+                    }
+
                 }
             } 
-            // this.finishLineOffset = 0;
+
         }
     }
 
@@ -82,8 +89,6 @@ export default class RunMap extends AcGameObject{
         if(this.state === "fighting")
         {
             let faster = this.get_faster();
-            // console.log(faster.x - this.finishX);
-            // console.log(this.finishX);
             if (faster.x - this.finishX <= 0)
             {
                 winner = faster;
@@ -91,7 +96,7 @@ export default class RunMap extends AcGameObject{
             }
         }
 
-        
+        return null;
     }
 
     get_faster()
@@ -106,15 +111,36 @@ export default class RunMap extends AcGameObject{
         }
         return faster;
     }
-    getAverageSpeed() {
-        const runners = this.playground.runners.filter(r => r.state === "running");
-        return runners.reduce((sum, r) => sum + r.speed, 0) / runners.length || 0;
+    getMidSpeed() {
+        // 步骤1：过滤出状态为 "running" 的跑者
+        const runningRunners = this.playground.runners.filter(r => r.state === "running");
+
+        // 步骤2：提取所有跑者的速度并排序
+        const sortedSpeeds = runningRunners
+        .map(r => r.speed)
+        .sort((a, b) => a - b); // 升序排序
+
+        // 步骤3：计算中位数
+        function calculateMedian(speeds) {
+        if (speeds.length === 0) return null; // 处理空数组
+        
+        const mid = Math.floor(speeds.length / 2);
+        // 数组长度为奇数：取中间值
+        // 数组长度为偶数：取中间两数平均值
+        return speeds.length % 2 !== 0 
+            ? speeds[mid] 
+            : (speeds[mid - 1] + speeds[mid]) / 2;
+        }
+
+        const medianSpeed = calculateMedian(sortedSpeeds);
+        // return runners.reduce((sum, r) => sum + r.speed, 0) / runners.length || 0;
+        return medianSpeed;
     }
 
     anyRunnerNearFinish() {
         return this.playground.runners.some(r => 
-            r.x < this.width * 0.6 && r.state === "running"
-                && r.x > this.width * 0.6 - r.radius
+            r.x < this.width * 0.3 && r.state === "running"
+ 
         );
     }
 
@@ -167,7 +193,7 @@ export default class RunMap extends AcGameObject{
     }
     draw_startline(ctx , canvas_width , raceHeight , numRaces)
     {
-        const startLineX = canvas_width * 0.8; // 右侧20vw位置（100vw - 20vw）
+        this.startLineX = canvas_width * 0.8; // 右侧20vw位置（100vw - 20vw）
         const redTrackStartY = raceHeight;     // 第一个红色跑道顶部
         const redTrackEndY = raceHeight * (numRaces - 1); // 最后一个红色跑道底部
 
@@ -175,8 +201,10 @@ export default class RunMap extends AcGameObject{
         ctx.beginPath();
         ctx.strokeStyle = 'white'; // 白色起跑线
         ctx.lineWidth = 4;        // 加粗显示
-        ctx.moveTo(startLineX + this.startLineOffset, redTrackStartY);
-        ctx.lineTo(startLineX + this.startLineOffset, redTrackEndY);
+        this.startLineX += this.startLineOffset;
+        let visualX = Math.round(this.startLineX);
+        ctx.moveTo(visualX , redTrackStartY);
+        ctx.lineTo(visualX, redTrackEndY);
         ctx.stroke();
     }
 
@@ -186,11 +214,12 @@ export default class RunMap extends AcGameObject{
             this.ctx.strokeStyle = '#ff0000';
             this.ctx.setLineDash([]);
             this.ctx.beginPath();
-            this.finishX += this.finishLineOffset;
+            this.finishX = this.finishLineOffset;
             this.ctx.moveTo(this.finishX, 0);
             this.ctx.lineTo(this.finishX, this.height);
             this.ctx.stroke();
         
         // 绘制跑道（修改部分）
     }
+    
  }

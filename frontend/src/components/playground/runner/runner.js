@@ -17,7 +17,7 @@ export default class Runner extends AcGameObject
 
     start()
     {   
-        console.log(this.state);
+       
         setTimeout(() => {
             this.state = "running";
             
@@ -45,10 +45,11 @@ export default class Runner extends AcGameObject
 
     move()
     {
-        this.x -= this.speed * this.timedelta / 1000;
-        if (this.x <= this.ctx.canvas.width * 0.4)
+        let midSpeed = this.playground.runmap.getMidSpeed();
+        this.x -= (this.speed - midSpeed * 0.5) * this.timedelta / 1000;
+        if (this.x <= this.ctx.canvas.width * 0.2)
         {
-            this.x = this.ctx.canvas.width * 0.4;
+            this.x = this.ctx.canvas.width * 0.2;
             this.state = "finished";
         }
     }
