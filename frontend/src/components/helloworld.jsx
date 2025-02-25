@@ -7,9 +7,10 @@ class HelloWorld extends Component {
      } 
 
      componentDidMount() {
-        axios.get('http://47.99.116.100:8000/runapp/helloworld/')
+        axios.get('https://app7360.acapp.acwing.com.cn/backend/runapp/helloworld/')
           .then(response => {
             this.setState({ message: response.data.message });
+            console.log(response.data.message);
           })
           .catch(error => {
             console.log(error);
