@@ -17,7 +17,7 @@ export default class RunMap extends AcGameObject{
         this.finishX = 0; //终点线x坐标
         this.showFinishLine = false;
         this.state = "fighting";
-        
+        this.clickHandler = null;
     }
 
     start() {
@@ -30,6 +30,37 @@ export default class RunMap extends AcGameObject{
         // this.$canvas.on("contextmenu", () => {
         //     return false;
         // })
+
+        this.clickHandler = (event) => {
+            this.handleCanvasClick(event);
+        }
+
+        this.ctx.canvas.addEventListener("click", this.clickHandler);
+    }
+    stopListening() {
+        if (this.clickHandler) {
+            this.ctx.canvas.removeEventListener('click', this.clickHandler);
+            this.clickHandler = null; // 清空引用
+        }
+    }
+
+    handleCanvasClick(event) {
+        const rect = this.$canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        
+        // 处理点击事件
+        // ...
+        for (let runner of this.playground.runners)
+        {
+            const distance = Math.sqrt((x - runner.x) ** 2 + (y - runner.y) ** 2);
+            if (distance <= runner.radius) {
+                runner.isSelected = true;
+                runner.wasSelected();
+            } else {
+                runner.isSelected = false;
+            }
+        }
     }
 
     update() {
