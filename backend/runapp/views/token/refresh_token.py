@@ -5,8 +5,8 @@ from rest_framework.response import Response
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         try:
-                        # 从COOKIE或请求体中获取refresh_token（优先请求体）
-            refresh_token = request.data.get('refresh') or request.COOKIES.get('refresh_token')
+                        # 从COOKIE或请求体中获取refresh_token（优先COOKIES）
+            refresh_token =   request.COOKIES.get('refresh_token') or request.data.get('refresh') 
             if not refresh_token:
                 return Response({'refreshed': False, 'detail': 'Missing refresh token'})
 

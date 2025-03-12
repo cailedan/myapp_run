@@ -1,13 +1,14 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from runapp.models.runner.runner import Runner
 from runapp.serializers.user_serializer import UserSerializer
 
+User = get_user_model()
 class RunnerSerializer(serializers.ModelSerializer):
     user = UserSerializer()  # 嵌套 UserSerializer
     class Meta:
         model = Runner  # 关联自定义的 Runner 模型
-        fields = ['user', 'photo']  # 序列化字段
+        fields = ['user','photo']  # 序列化字段
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')  # 提取 user 数据

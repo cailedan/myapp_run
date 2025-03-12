@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['47.99.116.100' , '47.99.116.100:5173' , 'app7360.acapp.acwing.
 INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders',
+    # 'corsheaders',
     'runapp.apps.RunappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authtools',
 ]
+
+AUTH_USER_MODEL = 'authtools.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,11 +54,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'corsheaders.middleware.CorsMiddleware',
+    # 👇 Add this line 允许跨域请求后端的views
+    # 'corsheaders.middleware.CorsMiddleware',
     # Add above line just before this line 👇
     'django.middleware.common.CommonMiddleware',
 ]
+
+
+
+#
+# CORS_ALLOWED_ORIGINS = [
+#     "http://example.com",
+#     "https://example.com",
+#     # 可以添加更多允许的域名
+# ]
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -136,8 +148,7 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# 👇 Add this line here
-CORS_ORIGIN_ALLOW_ALL = True
+
 
 REST_FRAMEWORK = {
 
@@ -189,4 +200,11 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+# 👇 Add this line here
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     # 可以添加更多允许的域名
+# ]
 
