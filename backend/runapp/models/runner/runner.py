@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class Runner(models.Model): # Player 类继承自 Model 类
-    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='runner_profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='runner')
 
     photo = models.URLField( max_length=256, blank=True)
     # 用于存储用户的头像的url

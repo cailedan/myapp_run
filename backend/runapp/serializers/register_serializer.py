@@ -1,4 +1,4 @@
-from rest_framework import serializers
+
 
 
 # class RegisterSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email','name', 'password', 'confirm_password')
+        fields = ('email', 'password', 'confirm_password')
 
     def validate(self, data):
         if data['password'] != data['confirm_password']:
@@ -40,7 +40,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         try:
             with transaction.atomic():
                     user = User(
-                            name=validated_data['name'],
+                            
                             email=validated_data['email'],
                         )
                     user.set_password(validated_data['password'])

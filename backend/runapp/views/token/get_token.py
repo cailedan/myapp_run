@@ -20,8 +20,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             res.data = {
                 'success': True,
                 'user': serializer.data,
-                'access': tokens['access'],
-                'refresh': tokens['refresh']
+
             }
 
             # 设置 Cookie（保持原有逻辑）
